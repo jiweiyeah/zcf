@@ -21,6 +21,7 @@ ZCF currently supports the following API provider presets:
 | `minimax` | MiniMax | MiniMax API service | ✅ | ✅ | `auth_token` |
 | `minimax-cn` | MiniMax CN | MiniMax China API service | ✅ | ✅ | `auth_token` |
 | `kimi` | Kimi (Moonshot) | Moonshot AI service | ✅ | ✅ | `auth_token` |
+| `y-api` | Y-API | Multi-vendor OpenAI-compatible gateway | ❌ | ✅ | API key |
 | `custom` | Custom | Custom API endpoint | ✅ | ✅ | Must specify |
 
 ## Provider Details
@@ -203,6 +204,26 @@ npx zcf init -s -p kimi -k "your-auth-token"
 
 # Codex
 npx zcf init -s -T codex -p kimi -k "your-auth-token"
+```
+
+### Y-API
+
+**Provider Name**: Y-API
+
+**Features**:
+- 🌐 Multi-vendor: DeepSeek, GLM, Kimi and OpenAI GPT behind one endpoint and key
+- 🔌 OpenAI-compatible API
+- ⚠️ Codex only: no Claude model is served, so Claude Code is not enabled
+
+**Configuration**:
+- **Codex Base URL**: `https://api.y-api.bestvirtualgoods.com/v1`
+- **Wire API**: `responses`
+- **Default Model**: `openai/gpt-5.6-sol`
+
+**Usage Example**:
+```bash
+# Codex
+npx zcf init -s -T codex -p y-api -k "your-api-key"
 ```
 
 ### Custom

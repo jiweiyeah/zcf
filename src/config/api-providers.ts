@@ -259,7 +259,20 @@ export const API_PROVIDER_PRESETS: ApiProviderPreset[] = [
     },
     description: 'DeepSeek official API (Anthropic-compatible endpoint)',
   },
-
+  {
+    id: 'y-api',
+    name: 'Y-API',
+    // Codex only. Y-API serves no Claude model, and Claude Code has not been
+    // verified against its Anthropic-compatible route, so it is not offered
+    // here rather than offered and failing on first use.
+    supportedCodeTools: ['codex'],
+    codex: {
+      baseUrl: 'https://api.y-api.bestvirtualgoods.com/v1',
+      wireApi: 'responses',
+      defaultModel: 'openai/gpt-5.6-sol',
+    },
+    description: 'Y-API multi-vendor OpenAI-compatible gateway',
+  },
 ]
 
 /**

@@ -20,6 +20,7 @@ ZCF 目前支持以下 API 提供商预设：
 | `glm-cn` | GLM (智谱AI) | 智谱 AI 服务 | ✅ | ❌ | `auth_token` |
 | `minimax` | MiniMax | MiniMax API 服务 | ✅ | ✅ | `auth_token` |
 | `kimi` | Kimi (月之暗面) | Moonshot AI 服务 | ✅ | ✅ | `auth_token` |
+| `y-api` | Y-API | 多厂商 OpenAI 兼容网关 | ❌ | ✅ | API Key |
 | `custom` | 自定义 | 自定义 API 端点 | ✅ | ✅ | 需指定 |
 
 ## 提供商详情
@@ -192,6 +193,26 @@ npx zcf init -s -p kimi -k "your-auth-token"
 
 # Codex
 npx zcf init -s -T codex -p kimi -k "your-auth-token"
+```
+
+### Y-API
+
+**提供商名称**：Y-API
+
+**特点**：
+- 🌐 多厂商聚合：DeepSeek、GLM、Kimi、OpenAI GPT 等共用一个端点与密钥
+- 🔌 OpenAI 兼容接口
+- ⚠️ 仅支持 Codex：不提供 Claude 型号，因此未启用 Claude Code
+
+**配置信息**：
+- **Codex Base URL**: `https://api.y-api.bestvirtualgoods.com/v1`
+- **Wire API**: `responses`
+- **默认模型**: `openai/gpt-5.6-sol`
+
+**使用示例**：
+```bash
+# Codex
+npx zcf init -s -T codex -p y-api -k "your-api-key"
 ```
 
 ### Custom (自定义)

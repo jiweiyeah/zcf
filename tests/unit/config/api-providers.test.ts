@@ -125,6 +125,19 @@ describe('aPI Provider Configuration', () => {
       expect(provider!.claudeCode?.defaultModels).toEqual(['deepseek-v4-pro', 'deepseek-v4-flash'])
     })
 
+    it('y-api provider should be codex-only with a Responses endpoint', () => {
+      const provider = API_PROVIDER_PRESETS.find(p => p.id === 'y-api')
+      expect(provider).toBeDefined()
+      expect(provider!.name).toBe('Y-API')
+      expect(provider!.supportedCodeTools).toEqual(['codex'])
+      // Y-API serves no Claude model, so Claude Code is deliberately not
+      // offered rather than offered and failing on first use.
+      expect(provider!.claudeCode).toBeUndefined()
+      expect(provider!.codex?.baseUrl).toBe('https://api.y-api.bestvirtualgoods.com/v1')
+      expect(provider!.codex?.wireApi).toBe('responses')
+      expect(provider!.codex?.defaultModel).toBe('openai/gpt-5.6-sol')
+    })
+
     it('providers with claudeCode config should have valid authType', () => {
       API_PROVIDER_PRESETS.forEach((provider) => {
         if (provider.claudeCode) {
@@ -178,6 +191,11 @@ describe('aPI Provider Configuration', () => {
       const providers = getApiProviders('codex')
       const provider302 = providers.find(p => p.id === '302ai')
       expect(provider302).toBeDefined()
+    })
+
+    it('should return y-api for codex but never for claude-code', () => {
+      expect(getApiProviders('codex').some(p => p.id === 'y-api')).toBe(true)
+      expect(getApiProviders('claude-code').some(p => p.id === 'y-api')).toBe(false)
     })
 
     it('should return empty array for unsupported code tool type', () => {

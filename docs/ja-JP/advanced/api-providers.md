@@ -20,6 +20,7 @@ ZCFは現在、以下のAPIプロバイダープリセットをサポートし�
 | `z-ai` | Z.ai | Z.ai API サービス | ✅ | ❌ | `auth_token` |
 | `minimax` | MiniMax | MiniMax APIサービス | ✅ | ✅ | `auth_token` |
 | `kimi` | Kimi (月の暗面) | Moonshot AIサービス | ✅ | ✅ | `auth_token` |
+| `y-api` | Y-API | マルチベンダー対応の OpenAI 互換ゲートウェイ | ❌ | ✅ | API キー |
 | `custom` | カスタム | カスタムAPIエンドポイント | ✅ | ✅ | 指定必須 |
 
 ## プロバイダーの詳細
@@ -192,6 +193,26 @@ npx zcf init -s -p kimi -k "your-auth-token"
 
 # Codex
 npx zcf init -s -T codex -p kimi -k "your-auth-token"
+```
+
+### Y-API
+
+**プロバイダー名**: Y-API
+
+**特徴**:
+- 🌐 マルチベンダー: DeepSeek、GLM、Kimi、OpenAI GPT を 1 つのエンドポイントとキーで利用
+- 🔌 OpenAI 互換 API
+- ⚠️ Codex のみ: Claude モデルを提供しないため、Claude Code は有効化していません
+
+**設定情報**:
+- **Codex Base URL**: `https://api.y-api.bestvirtualgoods.com/v1`
+- **Wire API**: `responses`
+- **デフォルトモデル**: `openai/gpt-5.6-sol`
+
+**使用例**:
+```bash
+# Codex
+npx zcf init -s -T codex -p y-api -k "your-api-key"
 ```
 
 ### カスタム
