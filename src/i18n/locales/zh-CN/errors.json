@@ -21,6 +21,7 @@
   "invalidPermissionsAllow": "无效的 permissions.allow：期望数组类型",
   "invalidCodeType": "无效的代码类型：\"{value}\"。可用的类型：{validOptions}。使用默认值：{defaultValue}。",
   "invalidProvider": "无效的提供商：{provider}。可用的提供商：{validProviders}",
+  "providerNotSupportedForCodeTool": "提供商 \"{provider}\" 无法用于 {codeTool}：未为其定义 {codeTool} 配置",
   "duplicateCodeToolAlias": "代码工具“{{id}}”定义了重复别名。",
   "codeToolKeyAlreadyRegistered": "代码工具键“{{key}}”已被注册。",
   "codeToolAlreadyRegistered": "代码工具“{{id}}”已被注册。",

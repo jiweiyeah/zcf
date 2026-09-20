@@ -14,6 +14,55 @@ import { codexMenu } from './menu'
 
 const definition = getCodeToolDefinition('codex')
 
+/**
+ * Resolve `--provider` into the concrete API settings Codex needs.
+ *
+ * Claude Code does this inside its own validate step. Codex did not, so
+ * `zcf init -T codex -p y-api -k <key> -s` left `apiType` undefined, the
+ * skip-prompt path resolved to `apiMode: 'skip'`, and the endpoint, model and
+ * credential were never written. Resolving the preset here makes both tools
+ * behave the same.
+ */
+async function applyProviderPreset(options: CodeToolInitOptions): Promise<void> {
+  if (!options.provider)
+    return
+
+  const { getProviderPreset, getValidProviderIds } = await import('../../config/api-providers')
+  const { i18n } = await import('../../i18n')
+  const validProviders = [...getValidProviderIds(), 'custom']
+
+  if (!validProviders.includes(options.provider)) {
+    throw new Error(i18n.t('errors:invalidProvider', {
+      provider: options.provider,
+      validProviders: validProviders.join(', '),
+    }))
+  }
+
+  // 'custom' means "no preset": the caller supplies -u/-M/-k itself.
+  if (options.provider === 'custom')
+    return
+
+  const preset = getProviderPreset(options.provider)
+  if (!preset)
+    return
+
+  if (!preset.codex) {
+    throw new Error(i18n.t('errors:providerNotSupportedForCodeTool', {
+      provider: options.provider,
+      codeTool: 'codex',
+    }))
+  }
+
+  // Every Codex preset authenticates with an API key. Without this an omitted
+  // -t leaves apiType undefined, and skip-prompt init then writes nothing.
+  if (!options.apiType)
+    options.apiType = 'api_key'
+
+  // Explicit -u/-M still win; the preset only fills the gaps.
+  options.apiUrl = options.apiUrl || preset.codex.baseUrl
+  options.apiModel = options.apiModel || preset.codex.defaultModel
+}
+
 function toCodexInitOptions(options: CodeToolInitOptions): CodexFullInitOptions {
   const hasApiConfigs = Boolean(options.apiConfigs || options.apiConfigsFile)
   const apiMode = hasApiConfigs
@@ -97,6 +146,7 @@ export const codexAdapter: CodeToolAdapter = {
     // Same as main skip-prompt: reject illegal -o before init writes Codex files.
     if (options.skipPrompt)
       parseAndValidateOutputStyles(options)
+    await applyProviderPreset(options)
   },
 
   async init(options: CodeToolInitOptions) {

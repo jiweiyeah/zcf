@@ -10,6 +10,7 @@ import { init } from './commands/init'
 import { showMainMenu } from './commands/menu'
 import { uninstall } from './commands/uninstall'
 import { update } from './commands/update'
+import { getValidProviderIds } from './config/api-providers'
 import { changeLanguage, i18n, initI18n } from './i18n'
 import { selectScriptLanguage } from './utils/prompts'
 import { readZcfConfigAsync } from './utils/zcf-config'
@@ -251,7 +252,7 @@ export async function setupCommands(cli: CAC): Promise<void> {
     .option('--api-haiku-model, -H <model>', 'Default Haiku model (e.g., claude-haiku-4-5)')
     .option('--api-sonnet-model, -S <model>', 'Default Sonnet model (e.g., claude-sonnet-4-5)')
     .option('--api-opus-model, -O <model>', 'Default Opus model (e.g., claude-opus-4-5)')
-    .option('--provider, -p <provider>', 'API provider preset (302ai, glm, minimax, kimi, custom)')
+    .option('--provider, -p <provider>', `API provider preset (${[...getValidProviderIds(), 'custom'].join(', ')})`)
     .option('--mcp-services, -m <services>', `Comma-separated MCP services to install (context7,mcp-deepwiki,Playwright,exa), "skip" to skip all, "all" for all non-key services, ${i18n.t('cli:help.defaults.prefix')} all`)
     .option('--workflows, -w <workflows>', `Comma-separated workflows to install (sixStepsWorkflow,featPlanUx,gitWorkflow,bmadWorkflow), "skip" to skip all, "all" for all workflows, ${i18n.t('cli:help.defaults.prefix')} all`)
     .option('--output-styles, -o <styles>', `Comma-separated output styles (engineer-professional,nekomata-engineer,laowang-engineer,default,explanatory,learning), "skip" to skip all, "all" for all custom styles, ${i18n.t('cli:help.defaults.prefix')} all`)

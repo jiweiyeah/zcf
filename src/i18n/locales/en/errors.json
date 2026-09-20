@@ -21,6 +21,7 @@
   "invalidPermissionsAllow": "Invalid permissions.allow: expected array",
   "invalidCodeType": "Invalid code type: \"{value}\". Valid options are: {validOptions}. Using default: {defaultValue}.",
   "invalidProvider": "Invalid provider: {provider}. Available providers: {validProviders}",
+  "providerNotSupportedForCodeTool": "Provider \"{provider}\" cannot be used with {codeTool}: no {codeTool} configuration is defined for it",
   "duplicateCodeToolAlias": "Code tool \"{{id}}\" defines duplicate aliases.",
   "codeToolKeyAlreadyRegistered": "Code tool key \"{{key}}\" is already registered.",
   "codeToolAlreadyRegistered": "Code tool \"{{id}}\" is already registered.",

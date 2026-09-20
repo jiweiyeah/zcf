@@ -1,3 +1,4 @@
+import type { CodeToolInitOptions } from '../../../src/code-tools/types'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createTimestampedBackup } from '../../../src/code-tools/backup'
 import { codexAdapter } from '../../../src/code-tools/codex/adapter'
@@ -249,5 +250,73 @@ describe('codex adapter', () => {
     expect(switchCodexProvider).toHaveBeenCalledWith('provider-a')
     expect(listCodexProvidersWithDisplay).toHaveBeenCalled()
     expect(handleCodexInteractiveSwitch).toHaveBeenCalled()
+  })
+
+  it('resolves a Codex provider preset into a concrete custom API config', async () => {
+    const options: CodeToolInitOptions = {
+      provider: 'y-api',
+      apiKey: 'sk-test',
+      skipPrompt: true,
+    }
+
+    await codexAdapter.validateInitOptions(options)
+    await codexAdapter.init(options, { lang: 'en' })
+
+    const mapped = vi.mocked(runCodexFullInit).mock.calls[0]![0]
+    expect(mapped?.apiMode).toBe('custom')
+    expect(mapped?.customApiConfig).toEqual({
+      type: 'api_key',
+      token: 'sk-test',
+      baseUrl: 'https://api.y-api.bestvirtualgoods.com/v1',
+      model: 'openai/gpt-5.6-sol',
+    })
+  })
+
+  it('lets an explicit -u/-M win over the provider preset', async () => {
+    const options: CodeToolInitOptions = {
+      provider: 'y-api',
+      apiKey: 'sk-test',
+      apiUrl: 'https://override.test/v1',
+      apiModel: 'override-model',
+      skipPrompt: true,
+    }
+
+    await codexAdapter.validateInitOptions(options)
+    await codexAdapter.init(options, { lang: 'en' })
+
+    const mapped = vi.mocked(runCodexFullInit).mock.calls[0]![0]
+    expect(mapped?.customApiConfig?.baseUrl).toBe('https://override.test/v1')
+    expect(mapped?.customApiConfig?.model).toBe('override-model')
+  })
+
+  it('rejects an unknown provider id before init can write files', async () => {
+    const options: CodeToolInitOptions = {
+      provider: 'does-not-exist',
+      apiKey: 'sk-test',
+      skipPrompt: true,
+    }
+
+    await expect(codexAdapter.validateInitOptions(options)).rejects.toThrow('errors:invalidProvider')
+  })
+
+  it('rejects a provider that has no Codex configuration', async () => {
+    const options: CodeToolInitOptions = {
+      provider: 'claude-api',
+      apiKey: 'sk-test',
+      skipPrompt: true,
+    }
+
+    await expect(codexAdapter.validateInitOptions(options)).rejects.toThrow('errors:providerNotSupportedForCodeTool')
+  })
+
+  it('leaves apiType undefined when no provider is supplied', async () => {
+    const options: CodeToolInitOptions = {
+      apiKey: 'sk-test',
+      skipPrompt: true,
+    }
+
+    await codexAdapter.validateInitOptions(options)
+
+    expect(options.apiType).toBeUndefined()
   })
 })
